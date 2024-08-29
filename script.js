@@ -2,7 +2,7 @@
 const player1 = { marker: "X", name: "Player 1", score: 0 };
 const player2 = { marker: "O", name: "Player 2", score: 0 };
 
-function GameController(player1, player2) {
+function GameController(player1, player2,handleRoundWinner, handlePartyWinner) {
     let gameBoard = ["", "", "", "", "", "", "", "", ""];
     let activePlayer = player1;
 
@@ -18,13 +18,10 @@ function GameController(player1, player2) {
         if (gameBoard[position] === "") {
             gameBoard[position] = activePlayer.marker;
             if (isRoundWinner()) {
-                console.log(`${activePlayer.name} wins this round!`);
+                handleRoundWinner();  // Do not reset the board here
                 activePlayer.score++;
                 if (isPartyWinner()) {
-                    console.log(`${activePlayer.name} wins this party!`);
-                    resetBoard();
-                } else {
-                    resetBoard();
+                    handlePartyWinner();
                 }
             } else if (isRoundDraw()) {
                 console.log("It's a draw!");
@@ -75,15 +72,35 @@ function GameController(player1, player2) {
 }
 
 function ScreenController() {
-    const game = GameController(player1, player2);
+    const game = GameController(player1, player2,handleRoundWinner, handlePartyWinner);
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
     const restartButton = document.createElement('button');
+    const newRoundButton = document.createElement("button");
+
+    const scoreBoxPlayer1 = document.createElement('div');
+    scoreBoxPlayer1.textContent = player1.name;
+
+    const scoreBoxPlayer2 = document.createElement('div');
+    scoreBoxPlayer2.textContent = player2.name;
+
+    // Create the scorebox with player name
+    const scorePlayer1 = document.createElement("p");
+    const scorePlayer2 = document.createElement("p");
+
+    scoreBoxPlayer1.appendChild(scorePlayer1);
+    scoreBoxPlayer2.appendChild(scorePlayer2);
+
+    document.body.appendChild(scoreBoxPlayer1);
+    document.body.appendChild(scoreBoxPlayer2);
+
 
     // Set up the restart button
     restartButton.textContent = 'Restart Game';
     restartButton.addEventListener('click', () => {
         game.resetBoard();
+        player1.score = 0;
+        player2.score = 0;
         updateScreen();
     });
     document.body.appendChild(restartButton);
@@ -106,11 +123,51 @@ function ScreenController() {
             cellButton.addEventListener("click", () => handleCellClick(index));
             boardDiv.appendChild(cellButton);
         });
+
+        // Update player score
+        scorePlayer1.textContent = player1.score;
+        scorePlayer2.textContent = player2.score;
     };
 
     function handleCellClick(index) {
         game.makeMove(index);
         updateScreen();
+    }
+
+    function handleRoundWinner() {
+        const activePlayer = game.getActivePlayer();
+        const winnerDiv = document.createElement('div');
+        const winnerName = document.createElement('p');
+        winnerName.textContent = `${activePlayer.name} wins this round!`;
+        newRoundButton.textContent = "Next Round";
+        winnerDiv.appendChild(winnerName);
+        winnerDiv.appendChild(newRoundButton);
+        
+        newRoundButton.addEventListener("click", () => {
+            winnerDiv.innerHTML = "";
+            game.resetBoard(); 
+            updateScreen();
+        });
+        
+        document.body.appendChild(winnerDiv);
+        updateScreen();  
+    }
+
+    function handlePartyWinner() {
+        const activePlayer = game.getActivePlayer();
+        const partyDiv = document.createElement('div');
+        const partyName = document.createElement('p');
+        partyName.textContent = `${activePlayer.name} wins the party!`;
+        partyDiv.appendChild(partyName);
+        
+        restartButton.addEventListener("click", () => {
+            partyDiv.innerHTML = "";
+            game.resetBoard(); 
+            updateScreen();
+        });
+        
+        document.body.appendChild(partyDiv);
+        updateScreen();  
     }
 
     // Initial render
