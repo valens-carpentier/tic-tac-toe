@@ -6,6 +6,10 @@ const form = document.querySelector("#form-name");
 const player1input = document.querySelector(".player1-name");
 const player2input = document.querySelector(".player2-name");
 const submitButton = document.querySelector(".submit");
+const resultContainer = document.querySelector('.game-display');
+const scoreContainer = document.querySelector('.score-box');
+
+resultContainer.appendChild(scoreContainer);
 
 // Elements to display scores
 let scoreBoxPlayer1, scoreBoxPlayer2;
@@ -18,18 +22,21 @@ function initializeScoreBoxes() {
     if (scoreBoxPlayer2) {
         scoreBoxPlayer2.remove();
     }
-
+    
+    // create function to create score player box
     scoreBoxPlayer1 = document.createElement('div');
+    scoreBoxPlayer1.classList.add("score-box-player-1");
     scoreBoxPlayer1.textContent = player1.name;
     scorePlayer1 = document.createElement("p");
     scoreBoxPlayer1.appendChild(scorePlayer1);
-    document.body.appendChild(scoreBoxPlayer1);
+    scoreContainer.appendChild(scoreBoxPlayer1);
 
     scoreBoxPlayer2 = document.createElement('div');
+    scoreBoxPlayer2.classList.add("score-box-player-2");
     scoreBoxPlayer2.textContent = player2.name;
-    scorePlayer2 = document.createElement("p");
+    scorePlayer2 = document.createElement("p");    
     scoreBoxPlayer2.appendChild(scorePlayer2);
-    document.body.appendChild(scoreBoxPlayer2);
+    scoreContainer.appendChild(scoreBoxPlayer2);
 }
 
 
@@ -111,6 +118,7 @@ function GameController(player1, player2,handleRoundWinner, handlePartyWinner, h
         resetBoard,
         isRoundWinner,
         isPartyWinner,
+        isRoundDraw,
     };
 }
 
@@ -118,15 +126,24 @@ function ScreenController() {
     const game = GameController(player1, player2,handleRoundWinner, handlePartyWinner,handleDrawRound);
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
+    const boardContainer = document.querySelector('.board-container');
+    const buttonContainer = document.querySelector('.button-container');
+
+    boardContainer.appendChild(boardDiv);
+    
     let restartButton = document.querySelector('.restart-button');
-    const newRoundButton = document.createElement("button");
-
-    initializeScoreBoxes();
-    initializeResetButton();
-
+    let newRoundButton = document.querySelector(".next-round-button");
+    
+    const resultDiv = document.createElement("div");
+    resultDiv.classList.add(".game-display");
+    resultContainer.appendChild(resultDiv);
 
     let gameIsOver = false;
     let roundIsOver = false;
+
+    initializeScoreBoxes();
+    initializeResetButton();
+    initializeNextRoundButton();
 
     const updateScreen = () => {
         // Clear the board
@@ -136,7 +153,7 @@ function ScreenController() {
         const activePlayer = game.getActivePlayer();
 
         // Display player's turn
-        playerTurnDiv.textContent = `${activePlayer.name}'s turn...`;
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn `;
 
         // Render board squares
         board.forEach((cell, index) => {
@@ -163,13 +180,32 @@ function ScreenController() {
             restartButton = document.createElement('button');
             restartButton.classList.add("restart-button");
             restartButton.textContent = 'Restart Game';
-            document.body.appendChild(restartButton);
+            buttonContainer.appendChild(restartButton);
         }
         restartButton.addEventListener('click', handleGameReset);
     }
+
+    function initializeNextRoundButton() {
+        if (newRoundButton) {
+            newRoundButton.removeEventListener('click', handleNextRound);
+        } else {
+            newRoundButton = document.createElement('button');
+            newRoundButton.classList.add("next-round-button");
+            newRoundButton.textContent = 'Next Round';
+            buttonContainer.appendChild(newRoundButton);
+        }
+        newRoundButton.addEventListener('click', handleNextRound);
+    }
+
+    function handleNextRound() {
+        resultDiv.innerHTML = "";
+        roundIsOver = false;
+        game.resetBoard(); 
+        updateScreen();
+    }
     
     function handleGameReset() {
-        // Clear the board and scores
+        resultDiv.innerHTML = "";
         game.resetBoard();
         player1.score = 0;
         player2.score = 0;
@@ -185,82 +221,34 @@ function ScreenController() {
     }
 
     function handleRoundWinner() {
-        const activePlayer = game.getActivePlayer();
-        
         if (game.isPartyWinner()) {
             handlePartyWinner();
             return; 
-        } else {
-
-        const winnerDiv = document.createElement('div');
+        } 
+    
+        const activePlayer = game.getActivePlayer();
         const winnerName = document.createElement('p');
-        winnerName.textContent = `${activePlayer.name} wins this round!`;
-        newRoundButton.textContent = "Next Round";
-        winnerDiv.appendChild(winnerName);
-        winnerDiv.appendChild(newRoundButton);
-    
-        newRoundButton.addEventListener("click", () => {
-            winnerDiv.innerHTML = "";
-            roundIsOver = false;
-            game.resetBoard(); 
-            updateScreen();
-        });
-
-        restartButton.addEventListener('click', () => {
-            winnerDiv.innerHTML = ""; 
-            updateScreen();
-        });
-
+        winnerName.textContent = `${activePlayer.name} wins this round`;
+        resultDiv.appendChild(winnerName);
         roundIsOver = true;
-    
-        document.body.appendChild(winnerDiv);
-        updateScreen();  
-        }
+        updateScreen();
     }
-
+    
     function handlePartyWinner() {
         const activePlayer = game.getActivePlayer();
-        const partyDiv = document.createElement('div');
         const partyName = document.createElement('p');
-        partyName.textContent = `${activePlayer.name} wins the party!`;
-        partyDiv.appendChild(partyName);
-
-        restartButton.addEventListener('click', () => {
-            partyDiv.innerHTML = ""; 
-            updateScreen();
-        });
-        
-        document.body.appendChild(partyDiv);
-
+        partyName.textContent = `${activePlayer.name} wins the party`;
+        resultDiv.appendChild(partyName);
         gameIsOver = true;
-
         updateScreen();  
     }
 
     function handleDrawRound() {
         const activePlayer = game.getActivePlayer();
-        const drawDiv = document.createElement('div');
         const drawName = document.createElement('p');
         drawName.textContent = `This is a draw!`;
-        newRoundButton.textContent = "Next Round";
-        drawDiv.appendChild(newRoundButton);
-        drawDiv.appendChild(drawName);
-
-        newRoundButton.addEventListener("click", () => {
-            drawDiv.innerHTML = "";
-            roundIsOver = false;
-            game.resetBoard(); 
-            updateScreen();
-        });
-
-        restartButton.addEventListener('click', () => {
-            drawDiv.innerHTML = ""; 
-            updateScreen();
-        });
-
+        resultDiv.appendChild(drawName);
         roundIsOver = true;
-    
-        document.body.appendChild(drawDiv);
         updateScreen();  
         }
 
@@ -271,7 +259,3 @@ function ScreenController() {
 // Initialize the screen controller once the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
 });
-
-
-// improve the code
-// create a result div insterad of a winner div, round div, draw div
