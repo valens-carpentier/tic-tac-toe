@@ -7,39 +7,23 @@
     --space-4: 32px;
     --space-5: 64px;
     --space-6: 128px;
-    --color-text-primary: #fff;
-    --color-text-secondary: #636669;
-    --color-text-disabled: #636669;
-    --color-primary-dark: #0cb259;
-    --color-primary-main: #12ff80;
-    --color-primary-light: #a1a3a7;
-    --color-secondary-dark: #636669;
-    --color-secondary-main: #fff;
-    --color-secondary-light: #12ff80;
-    --color-secondary-background: #1b2a22;
-    --color-border-main: #636669;
-    --color-border-light: #303033;
-    --color-border-background: #121312;
-    --color-error-dark: #ac2c3b;
-    --color-error-main: #ff5f72;
-    --color-error-light: #ffb4bd;
-    --color-error-background: #2f2527;
-    --color-success-dark: #028d4c;
-    --color-success-main: #00b460;
-    --color-success-light: #81c784;
-    --color-success-background: #1f2920;
-    --color-info-dark: #52bfdc;
-    --color-info-main: #5fddff;
-    --color-info-light: #b7f0ff;
-    --color-info-background: #19252c;
-    --color-warning-dark: #c04c32;
-    --color-warning-main: #ff8061;
-    --color-warning-light: #ffbc9f;
-    --color-warning-background: #2f2318;
-    --color-background-default: #121312;
-    --color-background-main: #121312;
-    --color-background-paper: #1c1c1c;
-    --color-background-light: #1b2a22;
+    --color-text-primary: #00ff00;
+    --color-text-secondary: #00cc00;
+    --color-text-disabled: #005500;
+    --color-primary-dark: #008000;
+    --color-primary-main: #00ff00;
+    --color-primary-light: #33ff33;
+    --color-secondary-dark: #004d00;
+    --color-secondary-main: #00ff00;
+    --color-secondary-light: #33ff33;
+    --color-secondary-background: #001a00;
+    --color-border-main: #00ff00;
+    --color-border-light: #008000;
+    --color-border-background: #000000;
+    --color-background-default: #000000;
+    --color-background-main: #000000;
+    --color-background-paper: #001a00;
+    --color-background-light: #002200;
     --color-backdrop-main: #636669;
     --color-logo-main: #fff;
     --color-logo-background: #303033;
@@ -59,16 +43,23 @@ body {
     align-items: center;
     gap: 2rem;
     background-color: var(--color-background-default);
-    font-family: 'Roboto';
+    font-family: 'Roboto', sans-serif;
+    color: var(--color-text-primary);
 }
 
 body > h1 {
     margin: 0;
     color:  var(--color-text-primary);
+    text-shadow: 0 0 10px var(--color-text-primary);
+    letter-spacing: 2px;
 }
 
 .board-container {
-    background-color: var(--color-background-default)
+    background-color: var(--color-background-default);
+    border: 1px solid var(--color-border-main);
+    box-shadow: 0 0 20px var(--color-border-main);
+    padding: 20px;
+    border-radius: 5px;
 }
 
 label {
@@ -88,32 +79,157 @@ label {
     text-align: center;
     line-height: 100px;
     cursor: pointer;
+    border: 1px solid var(--color-border-main);
+    background-color: var(--color-background-paper);
+    color: var(--color-text-primary);
+    text-shadow: 0 0 5px var(--color-text-primary);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.cell:hover {
+    background-color: var(--color-background-light);
+    box-shadow: 0 0 15px var(--color-primary-main);
 }
 
 .game-display {
     width: 310px;
     align-self: center;
     color: var(--color-text-primary);
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: center; /* Add this line */
+    display: flex; /* Add this line */
+    flex-direction: column; /* Add this line */
+    align-items: center; /* Add this line */
+    justify-content: center; /* Add this line */
+    margin-bottom: var(--space-2); /* Add this line for some spacing */
 }
 
 .button-container {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    margin-top: var(--space-2);
 }
 
 .button-container > button {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    background-color: var(--color-background-paper);
+    color: var(--color-primary-main);
+    border: 1px solid var(--color-primary-main);
+    text-shadow: 0 0 5px var(--color-primary-main);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.button-container > button:hover {
     background-color: var(--color-primary-main);
     color: var(--color-background-default);
-    border-radius: var(--mui-shape-borderRadius);
-    border-width: 0;
+    box-shadow: 0 0 15px var(--color-primary-main);
+}
+
+button {
+    background-color: var(--color-background-paper);
+    color: var(--color-primary-main);
+    border: 1px solid var(--color-primary-main);
+    padding: 8px 16px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
     font-weight: bold;
-    font-family: 'dm';
-    font-size: 0.875rem;
-    padding: 12px 48px;
-    border-color: var(--color-primary-dark);
-    box-shadow: var(--mui-shadows-2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: var(--mui-shape-borderRadius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px var(--color-primary-main);
+}
+
+button:hover {
+    background-color: var(--color-primary-main);
+    color: var(--color-background-default);
+    box-shadow: 0 0 15px var(--color-primary-main);
+}
+
+input[type="text"] {
+    background-color: var(--color-background-paper);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-main);
+    padding: 8px 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    border-radius: var(--mui-shape-borderRadius);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+    box-shadow: 0 0 10px var(--color-primary-main);
+    border-color: var(--color-primary-light);
+}
+
+button, 
+input[type="submit"] {
+    background-color: var(--color-background-paper);
+    color: var(--color-primary-main);
+    border: 1px solid var(--color-primary-main);
+    padding: 8px 16px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: var(--mui-shape-borderRadius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px var(--color-primary-main);
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: var(--color-primary-main);
+    color: var(--color-background-default);
+    box-shadow: 0 0 15px var(--color-primary-main);
+}
+
+input[type="submit"].submit {
+    background-color: var(--color-secondary-dark);
+    color: var(--color-secondary-light);
+    border-color: var(--color-secondary-light);
+    text-shadow: 0 0 5px var(--color-secondary-light);
+}
+
+input[type="submit"].submit:hover {
+    background-color: var(--color-secondary-light);
+    color: var(--color-secondary-dark);
+    box-shadow: 0 0 15px var(--color-secondary-light);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: var(--space-2);
+}
+
+.button-container > button {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    background-color: var(--color-background-paper);
+    color: var(--color-primary-main);
+    border: 1px solid var(--color-primary-main);
+    text-shadow: 0 0 5px var(--color-primary-main);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.button-container > button:hover {
+    background-color: var(--color-primary-main);
+    color: var(--color-background-default);
+    box-shadow: 0 0 15px var(--color-primary-main);
 }

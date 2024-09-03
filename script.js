@@ -221,16 +221,15 @@ function ScreenController() {
     }
 
     function handleRoundWinner() {
+        const activePlayer = game.getActivePlayer();
         if (game.isPartyWinner()) {
             handlePartyWinner();
-            return; 
-        } 
-    
-        const activePlayer = game.getActivePlayer();
-        const winnerName = document.createElement('p');
-        winnerName.textContent = `${activePlayer.name} wins this round`;
-        resultDiv.appendChild(winnerName);
-        roundIsOver = true;
+        } else {
+            const winnerName = document.createElement('p');
+            winnerName.textContent = `${activePlayer.name} wins this round`;
+            resultDiv.appendChild(winnerName);
+            roundIsOver = true;
+        }
         updateScreen();
     }
     
