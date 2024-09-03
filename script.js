@@ -15,30 +15,26 @@ resultContainer.appendChild(scoreContainer);
 let scoreBoxPlayer1, scoreBoxPlayer2;
 let scorePlayer1, scorePlayer2;
 
-function initializeScoreBoxes() {
-    if (scoreBoxPlayer1) {
-        scoreBoxPlayer1.remove();
-    }
-    if (scoreBoxPlayer2) {
-        scoreBoxPlayer2.remove();
-    }
-    
-    // create function to create score player box
-    scoreBoxPlayer1 = document.createElement('div');
-    scoreBoxPlayer1.classList.add("score-box-player-1");
-    scoreBoxPlayer1.textContent = player1.name;
-    scorePlayer1 = document.createElement("p");
-    scoreBoxPlayer1.appendChild(scorePlayer1);
-    scoreContainer.appendChild(scoreBoxPlayer1);
-
-    scoreBoxPlayer2 = document.createElement('div');
-    scoreBoxPlayer2.classList.add("score-box-player-2");
-    scoreBoxPlayer2.textContent = player2.name;
-    scorePlayer2 = document.createElement("p");    
-    scoreBoxPlayer2.appendChild(scorePlayer2);
-    scoreContainer.appendChild(scoreBoxPlayer2);
+function createScoreBox(player) {
+    const scoreBox = document.createElement('div');
+    scoreBox.classList.add(`score-box-player-${player.marker}`);
+    scoreBox.textContent = player.name;
+    const scoreElement = document.createElement("p");
+    scoreBox.appendChild(scoreElement);
+    return { scoreBox, scoreElement };
 }
 
+function initializeScoreBoxes() {
+    scoreContainer.innerHTML = ''; // Clear existing score boxes
+    
+    const { scoreBox: scoreBoxPlayer1, scoreElement: scorePlayer1 } = createScoreBox(player1);
+    const { scoreBox: scoreBoxPlayer2, scoreElement: scorePlayer2 } = createScoreBox(player2);
+    
+    scoreContainer.appendChild(scoreBoxPlayer1);
+    scoreContainer.appendChild(scoreBoxPlayer2);
+
+    return { scorePlayer1, scorePlayer2 };
+}
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -141,7 +137,7 @@ function ScreenController() {
     let gameIsOver = false;
     let roundIsOver = false;
 
-    initializeScoreBoxes();
+    let { scorePlayer1, scorePlayer2 } = initializeScoreBoxes();
     initializeResetButton();
     initializeNextRoundButton();
 
